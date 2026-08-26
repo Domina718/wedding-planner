@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Task | Wedding Planner</title>
+</head>
+<body>
+
+<h1>Edit task</h1>
+
+<form th:action="@{/tasks/update}"
+      th:object="${task}"
+      method="post">
+
+  <input type="hidden" th:field="*{id}">
+
+  <div>
+    <label for="title">Title:</label>
+    <input type="text"
+           id="title"
+           th:field="*{title}"
+           required>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="description">Description:</label>
+    <textarea id="description"
+           th:field="*{description}"></textarea>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="dueDate">Due date:</label>
+    <input type="date"
+           id="dueDate"
+           th:field="*{dueDate}"
+           required>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="priority">Priority:</label>
+    <select id="priority" th:field="*{priority}">
+      <option th:each="priority : ${priorities}"
+              th:value="${priority}"
+              th:text="${priority}">
+      </option>
+    </select>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="status">Status:</label>
+    <select id="status" th:field="*{status}">
+      <option th:each="status : ${statuses}"
+              th:value="${status}"
+              th:text="${status}">
+      </option>
+    </select>
+  </div>
+
+  <br>
+
+  <button type="submit">Save changes</button>
+
+</form>
+
+<br>
+
+<a th:href="@{/tasks}">Back to tasks</a>
+
+</body>
+</html>

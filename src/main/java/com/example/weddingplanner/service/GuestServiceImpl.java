@@ -1,0 +1,74 @@
+package com.example.weddingplanner.service;
+
+import com.example.weddingplanner.model.Guest;
+import com.example.weddingplanner.model.RsvpStatus;
+import com.example.weddingplanner.repository.GuestRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class GuestServiceImpl implements GuestService{
+
+    private final GuestRepository guestRepository;
+
+    public GuestServiceImpl(GuestRepository guestRepository){
+        this.guestRepository = guestRepository;
+    }
+
+    @Override
+    public List<Guest> getGuestsForWedding(Long weddingId){
+        return guestRepository.findByWeddingId(weddingId);
+    }
+
+    @Override
+    public Optional<Guest> getGuestById(Long id){
+        return guestRepository.findById(id);
+    }
+
+    @Override
+    public Guest saveGuest(Guest guest){
+
+        if(!guest.isPlusOne()){
+            guest.setPlusOneFirstName(null);
+            guest.setPlusOneLastName(null);
+        }
+        return guestRepository.save(guest);
+    }
+
+    @Override
+    public void deleteGuest(Long id){
+        guestRepository.deleteById(id);
+    }
+
+    @Override
+    public long countGuests(Long weddingId){
+        return guestRepository.findByWeddingId(weddingId).size();
+    }
+
+    @Override
+    public long countConfirmedGuests(Long weddingId){
+        return guestRepository.findByWeddingId(weddingId)
+                .stream()
+                .filter(guest -> guest.getRsvpStatus() == RsvpStatus.CONFIRMED)
+                .count();
+    }
+
+    @Override
+    public long countDeclinedGuests(Long weddingId){
+        return guestRepository.findByWeddingId(weddingId)
+                .stream()
+                .filter(guest -> guest.getRsvpStatus() == RsvpStatus.DECLINED)
+                .count();
+    }
+
+    @Override
+    public long countPendingGuests(Long weddingId){
+        return guestRepository.findByWeddingId(weddingId)
+                .stream()
+                .filter(guest -> guest.getRsvpStatus() == RsvpStatus.INVITED)
+                .count();
+    }
+
+}

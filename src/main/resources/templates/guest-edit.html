@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Guest | Wedding Planner</title>
+</head>
+<body>
+
+<h1>Edit guest</h1>
+
+<form th:action="@{/guests/update}"
+     th:object="${guest}"
+     method="post">
+
+  <input type="hidden" th:field="*{id}">
+
+  <div>
+    <label for="firstName">First name:</label>
+    <input type="text"
+           id="firstName"
+           th:field="*{firstName}"
+           required>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="lastName">Last name:</label>
+    <input type="text"
+           id="lastName"
+           th:field="*{lastName}"
+           required>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="email">Email:</label>
+    <input type="email"
+           id="email"
+           th:field="*{email}">
+  </div>
+
+  <br>
+
+  <div>
+    <label for="phone">Phone:</label>
+    <input type="text"
+           id="phone"
+           th:field="*{phone}">
+  </div>
+
+  <br>
+
+  <div>
+    <label for="rsvpStatus">RSVP status:</label>
+    <select id="rsvpStatus"
+            th:field="*{rsvpStatus}">
+        <option th:each="status : ${rsvpStatuses}"
+                th:value="${status}"
+                th:text="${status}">
+        </option>
+    </select>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="plusOne">Plus one:</label>
+    <input type="checkbox"
+           id="checkbox"
+           th:field="*{plusOne}">
+  </div>
+
+  <div id="plusOneFields">
+
+    <br>
+
+    <label for="plusOneFirstName">Plus-one first name:</label>
+    <input type="text"
+           id="plusOneFirstName"
+           th:field="*{plusOneFirstName}">
+
+    <br><br>
+
+    <label for="plusOneLastName">Plus-one last name:</label>
+    <input type="text"
+           id="plusOneLastName"
+           th:field="*{plusOneLastName}">
+  </div>
+
+  <br>
+
+  <button type="submit">Save changes</button>
+
+</form>
+
+<br>
+
+<a th:href="@{/guests}">Back to guests</a>
+
+<script>
+  const plusOneCheckbox = document.getElementById("plusOne");
+  const plusOneFields = document.getElementById("plusOneFields");
+
+  function togglePlusOneFields() {
+    plusOneFields.style.display = plusOneCheckbox.checked ? "block : "none";
+  }
+
+  plusOneCheckbox.addEventListener("change", togglePlusOneFields);
+  togglePlusOneFields();
+</script>
+
+</body>
+</html>

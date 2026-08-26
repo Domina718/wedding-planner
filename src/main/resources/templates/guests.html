@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Guests | Wedding Planner</title>
+</head>
+<body>
+
+<h1>Guests</h1>
+
+<a th:href="@{/}">Back to dashboard</a>
+
+<h2>Add guests</h2>
+
+<form th:action="@{/guests/save}"
+      th:object="${guest}"
+      method="post">
+
+  <div>
+      <label for="firstName">First name:</label>
+      <input type="text"
+             id="firstName"
+             th:field="*{firstName}"
+             required>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="lastName">Last name:</label>
+    <input type="text"
+           id="lastName"
+           th:field="*{lastName}"
+           required>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="email">Email:</label>
+    <input type="email"
+           id="email"
+           th:field="*{email}">
+  </div>
+
+  <br>
+
+  <div>
+    <label for="phone">Phone:</label>
+    <input type="text"
+           id="phone"
+           th:field="*{phone}">
+  </div>
+
+  <br>
+
+  <div>
+    <label for="rsvpStatus">RSVP status:</label>
+    <select id="rsvpStatus"
+            th:field="*{rsvpStatus}">
+          <option th:each="status : ${rsvpStatuses}"
+                  th:value="${status}"
+                  th:text="${status}">
+          </option>
+    </select>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="plusOne">Plus one:</label>
+    <input type="checkbox"
+           id="plusOne"
+           th:field="*{plusOne}">
+  </div>
+
+  <div id="plusOneFields" style="display: none;">
+
+    <br>
+
+    <label for="plusOneFirstName">Plus-one first name:</label>
+    <input type="text"
+           id="plusOneFirstName"
+           th:field="*{plusOneFirstName}">
+
+    <br><br>
+
+    <label for="plusOneLastName">Plus-one last name:</label>
+    <input type="text"
+           id="plusOneLastName"
+           th:field="*{plusOneLastName}">
+  </div>
+
+  <br>
+
+  <button type="submit">Add guest</button>
+
+</form>
+
+<hr>
+
+<h2>Guest list</h2>
+
+<p th:if="${guests.isEmpty()}">
+  No guests have been added yet.
+</p>
+
+<table th:if="${!guests.isEmpty()}" border="1">
+
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Phone</th>
+    <th>RSVP</th>
+    <th>Plus one</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+
+  <tbody>
+
+  <tr th:each="guest : ${guests}">
+    <td th:text="${guest.firstName + ' ' + guest.lastName}"></td>
+    <td th:text="${guest.email}"></td>
+    <td th:text="${guest.phone}"></td>
+    <td th:text="${guest.rsvpStatus}"></td>
+
+    <td>
+      <span th:if="${guest.plusOne}"
+            th:text="${guest.plusOneFirstName + ' ' + guest.plusOneLastName}">
+      </span>
+
+      <span th:unless="${guest.plusOne}">
+        No
+      </span>
+    </td>
+    <td>
+      <a th:href="@{/guests/edit/{id}(id=${guest.id})}">
+        Edit
+      </a>
+
+      <form th:action="@{/guests/delete/{id}(id=${guest.id})}"
+            method="post"
+            style="display:inline;">
+          <button type="submit">Delete</button>
+      </form>
+    </td>
+
+  </tr>
+
+  </tbody>
+
+</table>
+
+<script>
+  const plusOneCheckbox = document.getElementById("plusOne");
+  const plusOneFields = document.getElementById("plusOneFields");
+
+  function togglePlusOneFields(){
+    if (plusOneCheckbox.checked){
+      plusOneFields.style.display = "block";
+    }
+    else {
+      plusOneFields.style.display = "none";
+    }
+  }
+
+  plusOneCheckbox.addEventListener("change", togglePlusOneFields);
+
+  togglePlusOneFields();
+</script>
+
+</body>
+</html>

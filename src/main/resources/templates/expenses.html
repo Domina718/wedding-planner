@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Expenses | Wedding Planner</title>
+</head>
+<body>
+
+<h1>Expenses</h1>
+
+<a th:href="@{/}">Back to dashboard</a>
+
+<h2>Add expense</h2>
+
+<form th:action="@{/expenses/save}"
+      th:object="${expense}"
+      method="post">
+
+  <div>
+    <label for="description">Description</label>
+    <input type="text"
+           id="description"
+           th:field="*{description}"
+           required>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="amount">Amount:</label>
+    <input type="number"
+           id="amount"
+           th:field="*{amount}"
+           min="0"
+           step="0.01"
+           required>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="category">Category:</label>
+
+    <select id="category"
+            th:field="*{category}">
+
+      <option th:each="category : ${categories}"
+              th:value="${category}"
+              th:text="${category}">
+      </option>
+
+    </select>
+  </div>
+
+  <br>
+
+  <div>
+    <label for="date">Date:</label>
+    <input type="date"
+           id="date"
+           th:field="*{date}">
+  </div>
+
+  <br>
+
+  <div>
+    <label for="paid">Paid:</label>
+    <input type="checkbox"
+           id="paid"
+           th:field="*{paid}">
+  </div>
+
+  <br>
+
+  <button type="submit">Add expense</button>
+
+</form>
+
+<hr>
+
+<h2>Expense summary</h2>
+
+<p>Wedding budget: <strong th:text="${budget}"></strong></p>
+
+<p>Total expenses: <strong th:text="${totalExpenses}"></strong></p>
+
+<p>Total paid: <strong th:text="${totalPaid}"></strong></p>
+
+<p>Remaining budget: <strong th:text="${remainingBudget}"></strong></p>
+
+<p th:if="${remainingBudget.signum() < 0}">
+  <strong>
+    Warning: Wedding budget has been exceeded!
+  </strong>
+</p>
+
+<hr>
+
+<h2>Expense list</h2>
+
+<form th:action="@{/expenses}" method="get">
+
+  <label for="filterCategory">Category:</label>
+
+  <select id="filterCategory" name="category">
+    <option value="">All</option>
+
+    <option th:each="category : ${categories}"
+            th:value="${category}"
+            th:text="${category}">
+    </option>
+  </select>
+
+  <button type="submit">Filter</button>
+
+</form>
+
+<br>
+
+<a th:href="@{/expenses}">Clear filter</a>
+
+<p th:if="${expenses.isEmpty()}">No expenses found.</p>
+
+<table th:if="${!expenses.isEmpty()}" border="1">
+
+  <thead>
+  <tr>
+    <th>Description</th>
+    <th>Amount</th>
+    <th>Category</th>
+    <th>Date</th>
+    <th>Paid</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+
+  <tbody>
+
+  <tr th:each="expense : ${expenses}">
+    <td th:text="${expense.description}"></td>
+    <td th:text="${expense.amount}"></td>
+    <td th:text="${expense.category}"></td>
+    <td th:text="${expense.date}"></td>
+
+    <td>
+      <span th:if="${expense.paid}">Yes</span>
+      <span th:unless="${expense.paid}">No</span>
+    </td>
+
+    <td>
+      <a th:href="@{/expenses/edit/{id}(id=${expense.id})}">
+        Edit
+      </a>
+
+      <form th:action="@{/expenses/delete/{id}(id=${expense.id})}"
+            method="post"
+            style="display:inline;">
+        <button type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+
+  </tbody>
+
+</table>
+
+</body>
+</html>

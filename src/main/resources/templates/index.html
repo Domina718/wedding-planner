@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Wedding Planner</title>
+</head>
+<body>
+
+<h1>Wedding Planner</h1>
+
+<p>Welcome to your wedding planning application.</p>
+
+<h2>Wedding details</h2>
+
+<form th:action="@{/wedding/save}"
+      th:object="${wedding}"
+      method="post">
+
+    <div>
+        <label for="partnerOneName">Partner 1:</label>
+        <input type="text"
+               id="partnerOneName"
+               th:field="*{partnerOneName}">
+    </div>
+
+    <br>
+
+    <div>
+        <label for="partnerTwoName">Partner 2:</label>
+        <input type="text"
+               id="partnerTwoName"
+               th:field="*{partnerTwoName}">
+    </div>
+
+    <br>
+
+    <div>
+        <label for="weddingDate">Wedding date:</label>
+        <input type="date"
+               id="weddingDate"
+               th:field="*{weddingDate}">
+    </div>
+
+    <br>
+
+    <div>
+        <label for="budget">Budget:</label>
+        <input type="number"
+               id="budget"
+               step="0.01"
+               th:field="*{budget}">
+    </div>
+
+
+    <hr>
+    <h2>Dashboard</h2>
+
+    <div th:if="${wedding.id != null}">
+
+        <h3 th:text="${wedding.partnerOneName + ' & ' + wedding.partnerTwoName}"></h3>
+
+        <p>Wedding date:
+            <strong th:text="${wedding.weddingDate}"></strong>
+        </p>
+
+        <p th:if="${daysUntilWedding != null}">
+            Days until wedding:
+            <strong th:text="${daysUntilWedding}"></strong>
+        </p>
+
+        <hr>
+
+        <h3>Guests</h3>
+
+        <p>
+            Invited guests:
+            <strong th:text="${guestCount}"></strong>
+        </p>
+
+        <p>
+            Confirmed guests:
+            <strong th:text="${confirmedGuestCount}"></strong>
+        </p>
+
+        <p>
+            Pending guests:
+            <strong th:text="${pendingGuestCount}"></strong>
+        </p>
+
+        <p>
+            Declined guests:
+            <strong th:text="${declinedGuestCount}"></strong>
+        </p>
+
+        <h3>Tasks</h3>
+
+        <p>
+            Total tasks:
+            <strong th:text="${taskCount}"></strong>
+        </p>
+
+        <p>
+            Completed tasks:
+            <strong th:text="${completedTaskCount}"></strong>
+        </p>
+
+        <hr>
+
+        <h3>Budget</h3>
+
+        <p>
+            Wedding budget:
+            <strong th:text="${wedding.budget}"></strong>
+        </p>
+
+        <p>
+            Total expenses:
+            <strong th:text="${totalExpenses}"></strong>
+        </p>
+
+        <p>
+            Remaining budget:
+            <strong th:text="${remainingBudget}"></strong>
+        </p>
+
+        <hr>
+
+        <h3>Vendors</h3>
+
+        <p>
+            Total vendors:
+            <strong th:text="${vendorCount}"></strong>
+        </p>
+
+        <p>
+            Booked vendors:
+            <strong th:text="${bookedVendorCount}"></strong>
+        </p>
+
+        <h3>Expenses by category</h3>
+
+        <div style="width: 300px; height: 300px;">
+            <canvas id="expenseChart"></canvas>
+        </div>
+
+
+    </div>
+
+    <br>
+
+    <a th:href="@{/guests}">Manage guests</a>
+
+    <br><br>
+
+    <a th:href="@{/tasks}">Manage tasks</a>
+
+    <br><br>
+
+    <a th:href="@{/expenses}">Manage expenses</a>
+
+    <br><br>
+
+    <a th:href="@{/vendors}">Manage vendors</a>
+
+    <br><br>
+
+    <button type="submit">Save</button>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script th:inline="javascript">
+
+    const labels = /*[[${expenseCategoryLabels}]]*/ [];
+    const values = /*[[${expenseCategoryValues}]]*/ [];
+
+    const chartElement = document.getElementById("expenseChart");
+
+    if(chartElement && labels.length > 0){
+
+        new Chart(chartElement, {
+            type: "doughnut",
+
+            data: {
+                labels: labels,
+
+                datasets: [{
+                    label:"Expenses",
+                    data: values
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
