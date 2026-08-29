@@ -2,7 +2,7 @@ package com.example.weddingplanner.model;
 
 public enum ExpenseCategory {
     VENUE,
-    CATERING,
+    FOOD,
     PHOTOGRAPHY,
     MUSIC,
     DECORATION,

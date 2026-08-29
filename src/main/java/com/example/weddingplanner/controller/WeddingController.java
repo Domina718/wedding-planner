@@ -72,7 +72,7 @@ public class WeddingController {
 
             model.addAttribute("declinedGuestCount", guestService.countDeclinedGuests(weddingId));
 
-            model.addAttribute("pendingGuestCount", guestService.countPendingGuests(weddingId));
+            model.addAttribute("invitedGuestCount", guestService.countInvitedGuests(weddingId));
 
             if(wedding.getBudget() != null){
                 model.addAttribute("remainingBudget", wedding.getBudget().subtract(totalExpenses));

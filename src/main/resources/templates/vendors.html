@@ -3,198 +3,343 @@
 <head>
     <meta charset="UTF-8">
     <title>Vendors | Wedding Planner</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
-<h1>Vendors</h1>
+<nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
+    <div class="container">
 
-<a th:href="@{/}">Back to dashboard</a>
+        <a class="navbar-brand fw-bold"
+           th:href="@{/}">
+            Wedding Planner
+        </a>
 
-<h2>Add vendor</h2>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" th:href="@{/}">Dashboard</a>
+            <a class="nav-link" th:href="@{/guests}">Guests</a>
+            <a class="nav-link" th:href="@{/tasks}">Tasks</a>
+            <a class="nav-link" th:href="@{/expenses}">Expenses</a>
+            <a class="nav-link active" th:href="@{/vendors}">Vendors</a>
+        </div>
 
-<form th:action="@{/vendors/save}"
-      th:object="${vendor}"
-      method="post">
+    </div>
+</nav>
 
-  <div>
-    <label for="name">Name:</label>
-    <input type="text"
-           id="name"
-           th:field="*{name}"
-           required>
-  </div>
+<div class="container py-5">
 
-  <br>
+    <div class="mb-4">
 
-  <div>
-    <label for="serviceType">Service type:</label>
-    <select id="serviceType"
-            th:field="*{serviceType}"
-            required>
+        <h1 class="fw-bold">
+            Vendors
+        </h1>
 
-      <option value="">Select service</option>
+        <p class="text-muted">
+            Manage wedding vendors, payments and booking status.
+        </p>
 
-      <option th:each="type : ${serviceTypes}"
-              th:value="${type}"
-              th:text="${type}">
-      </option>
+    </div>
 
-    </select>
-  </div>
+    <div class="card shadow-sm mb-5">
 
-  <br>
+        <div class="card-body">
 
-  <div>
-    <label for="email">Email:</label>
-    <input type="email"
-           id="email"
-           th:field="*{email}">
-  </div>
+            <h4 class="card-title mb-4">
+                Add vendor
+            </h4>
 
-  <br>
+            <form th:action="@{/vendors/save}"
+                  th:object="${vendor}"
+                  method="post">
 
-  <div>
-    <label for="phone">Phone:</label>
-    <input type="text"
-           id="phone"
-           th:field="*{phone}">
-  </div>
+                <div class="row g-3">
 
-  <br>
+                    <div class="col-md-6">
 
-  <div>
-    <label for="estimatedPrice">Estimated price:</label>
-    <input type="number"
-           id="estimatedPrice"
-           th:field="*{estimatedPrice}"
-           min="0"
-           step="0.01">
-  </div>
+                        <label for="name"
+                               class="form-label">
+                            Name
+                        </label>
 
-  <br>
+                        <input type="text"
+                               id="name"
+                               th:field="*{name}"
+                               class="form-control"
+                               required>
+                    </div>
 
-  <div>
-    <label for="depositAmount">Deposit amount:</label>
-    <input type="number"
-           id="depositAmount"
-           th:field="*{depositAmount}"
-           min="0"
-           step="0.01">
-  </div>
+                    <div class="col-md-6">
 
-  <br>
+                        <label for="serviceType"
+                               class="form-label">
+                            Service type:
+                        </label>
 
-  <div>
-    <label for="status">Status:</label>
+                        <select id="serviceType"
+                                th:field="*{serviceType}"
+                                class="form-select"
+                                required>
 
-    <select id="status"
-            th:field="*{status}">
+                            <option value="">Select service</option>
 
-      <option th:each="status : ${statuses}"
-              th:value="${status}"
-              th:text="${status}">
-      </option>
+                            <option th:each="type : ${serviceTypes}"
+                                    th:value="${type}"
+                                    th:text="${type}">
+                            </option>
 
-    </select>
-  </div>
+                        </select>
 
-  <br>
+                    </div>
 
-  <button type="submit">Add vendor</button>
+                    <div class="col-md-6">
 
-</form>
+                        <label for="email"
+                               class="form-label">
+                            Email:
+                        </label>
 
-<hr>
+                        <input type="email"
+                               id="email"
+                               th:field="*{email}"
+                               class="form-control">
 
-<h2>Vendor list</h2>
+                    </div>
 
-<h3>Filter vendors</h3>
+                    <div class="col-md-6">
 
-<form th:action="@{/vendors}" method="get">
+                        <label for="phone"
+                               class="form-label">
+                            Phone:
+                        </label>
 
-  <label for="filterServiceType">Service type::</label>
+                        <input type="text"
+                               id="phone"
+                               th:field="*{phone}"
+                               class="form-control">
+                    </div>
 
-  <select id="filterServiceType" name="serviceType">
+                    <div class="col-md-6">
 
-    <option value="">All</option>
+                        <label for="estimatedPrice"
+                               class="form-label">
+                            Estimated price:
+                        </label>
 
-    <option th:each="type : ${serviceTypes}"
-            th:value="${type}"
-            th:text=${type}>
-    </option>
+                        <input type="number"
+                               id="estimatedPrice"
+                               th:field="*{estimatedPrice}"
+                               min="0"
+                               step="0.01"
+                               class="form-control">
+                    </div>
 
-  </select>
+                    <div class="col-md-6">
 
-  <label for="filterStatus">Status:</label>
+                        <label for="depositAmount"
+                               class="form-label">
+                            Deposit amount:
+                        </label>
 
-  <select id="filterStatus" name="status">
+                        <input type="number"
+                               id="depositAmount"
+                               th:field="*{depositAmount}"
+                               min="0"
+                               step="0.01"
+                               class="form-control">
+                    </div>
 
-    <option value="">All</option>
+                    <div class="col-md-6">
 
-    <option th:each="status : ${statuses}"
-            th:value="${status}"
-            th:text=${status}>
-    </option>
+                        <label for="status"
+                               class="form-label">
+                            Status:
+                        </label>
 
-  </select>
+                        <select id="status"
+                                th:field="*{status}"
+                                class="form-select">
 
-  <button type="submit">Filter</button>
+                            <option th:each="status : ${statuses}"
+                                    th:value="${status}"
+                                    th:text="${status}">
+                            </option>
 
-</form>
+                        </select>
 
-<br>
+                    </div>
 
-<a th:href="@{/vendors}">Clear filter</a>
+                </div>
 
-<p th:if="${vendors.isEmpty()}">
-  No vendors found.
-</p>
+                <button type="submit"
+                        class="btn btn-dark mt-4">
+                    Add vendor
+                </button>
 
-<table th:if="${!vendors.isEmpty()}" border="1">
+            </form>
 
-  <thead>
-  <tr>
-    <th>Name</th>
-    <th>Service</th>
-    <th>Email</th>
-    <th>Phone</th>
-    <th>Estimated price</th>
-    <th>Deposit</th>
-    <th>Remaining</th>
-    <th>Status</th>
-    <th>Actions</th>
+        </div>
 
-  </tr>
-  </thead>
+    </div>
 
-  <tbody>
+    <div class="card shadow-sm">
 
-  <tr th:each="vendor : ${vendors}">
-    <td th:text="${vendor.name}"></td>
-    <td th:text="${vendor.serviceType}"></td>
-    <td th:text="${vendor.email}"></td>
-    <td th:text="${vendor.phone}"></td>
-    <td th:text="${vendor.estimatedPrice}"></td>
-    <td th:text="${vendor.depositAmount}"></td>
-    <td th:text="${vendor.remainingAmount}"></td>
-    <td th:text="${vendor.status}"></td>
+        <div class="card-body">
 
-    <td>
-      <a th:href="@{/vendors/edit/{id}(id=${vendor.id})}">
-        Edit
-      </a>
+            <div class="d-flex justify-content-between align-items-center mb-4">
 
-      <form th:action="@{/vendors/delete/{id}(id=${vendor.id})}"
-            method="post"
-            style="display:inline;">
-        <button type="submit">Delete</button>
-      </form>
-    </td>
-  </tr>
+                <h4 class="card-title mb-0">
+                    Vendor list
+                </h4>
 
-  </tbody>
+                <span class="text-muted">
+                    Shown:
+                    <strong th:text="${vendors.size()}"></strong>
+                </span>
 
-</table>
+            </div>
+
+            <form th:action="@{/vendors}"
+                  method="get"
+                  class="row g-2 mb-4">
+
+                <div class="col-md-4">
+
+                    <select id="filterServiceType"
+                            name="serviceType"
+                            class="form-select">
+
+                        <option value="">All service types</option>
+
+                        <option th:each="type : ${serviceTypes}"
+                                th:value="${type}"
+                                th:text=${type}>
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <select id="filterStatus"
+                            name="status"
+                            class="form-select">
+
+                        <option value="">All statuses</option>
+
+                        <option th:each="status : ${statuses}"
+                                th:value="${status}"
+                                th:text=${status}>
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-auto">
+
+                    <button type="submit"
+                            class="btn btn-outline-dark">
+                        Filter
+                    </button>
+
+                </div>
+
+                <div class="col-auto">
+
+                    <a th:href="@{/vendors}"
+                       class="btn btn-outline-secondary">
+                        Clear filter
+                    </a>
+
+                </div>
+
+            </form>
+
+            <div th:if="${vendors.isEmpty()}"
+                 class="alert alert-secondary">
+                No vendors found.
+            </div>
+
+            <div th:if="${!vendors.isEmpty()}"
+                 class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+
+                    <tr>
+
+                        <th>Name</th>
+                        <th>Service</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Estimated price</th>
+                        <th>Deposit</th>
+                        <th>Remaining</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="vendor : ${vendors}">
+                        <td th:text="${vendor.name}"></td>
+                        <td th:text="${vendor.serviceType}"></td>
+                        <td th:text="${vendor.email}"></td>
+                        <td th:text="${vendor.phone}"></td>
+                        <td th:text="${vendor.estimatedPrice}"></td>
+                        <td th:text="${vendor.depositAmount}"></td>
+                        <td th:text="${vendor.remainingAmount}"></td>
+                        <td th:text="${vendor.status}"></td>
+
+                        <td>
+                            <a th:href="@{/vendors/edit/{id}(id=${vendor.id})}"
+                               class="btn btn-outline-dark btn-sm">
+                                Edit
+                            </a>
+
+                            <form th:action="@{/vendors/delete/{id}(id=${vendor.id})}"
+                                  method="post"
+                                  class="d-inline">
+
+                                <button type="submit"
+                                        class="btn btn-outline-danger btn-sm">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="mt-4">
+
+        <a th:href="@{/}"
+           class="btn btn-outline-secondary">
+            Back to dashboard
+        </a>
+
+    </div>
+
+
+</div>
 
 </body>
 </html>

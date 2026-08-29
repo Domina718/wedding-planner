@@ -21,6 +21,6 @@ public interface GuestService {
 
     long countDeclinedGuests(Long weddingId);
 
-    long countPendingGuests(Long weddingId);
+    long countInvitedGuests(Long weddingId);
 
 }

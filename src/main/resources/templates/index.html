@@ -3,169 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <title>Wedding Planner</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
-<h1>Wedding Planner</h1>
+<nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
+    <div class="container">
 
-<p>Welcome to your wedding planning application.</p>
+        <a class="navbar-brand fw-bold"
+           th:href="@{/}">
+            Wedding Planner
+        </a>
 
-<h2>Wedding details</h2>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link active" th:href="@{/}">Dashboard</a>
+            <a class="nav-link" th:href="@{/guests}">Guests</a>
+            <a class="nav-link" th:href="@{/tasks}">Tasks</a>
+            <a class="nav-link" th:href="@{/expenses}">Expenses</a>
+            <a class="nav-link" th:href="@{/vendors}">Vendors</a>
+        </div>
 
-<form th:action="@{/wedding/save}"
-      th:object="${wedding}"
-      method="post">
-
-    <div>
-        <label for="partnerOneName">Partner 1:</label>
-        <input type="text"
-               id="partnerOneName"
-               th:field="*{partnerOneName}">
     </div>
+</nav>
 
-    <br>
+<div class="container py-5">
 
-    <div>
-        <label for="partnerTwoName">Partner 2:</label>
-        <input type="text"
-               id="partnerTwoName"
-               th:field="*{partnerTwoName}">
+    <div th:if="${wedding.id != null}"
+         class="text-center mb-5">
+
+        <h1 class="display-5 fw-bold"
+            th:text="${wedding.partnerOneName + ' & ' + wedding.partnerTwoName}">
+        </h1>
+
+        <p class="lead mb-1"
+           th:text="${wedding.weddingDate}">
+        </p>
+
+        <p th:if="${daysUntilWedding != null}"
+           class="text-muted">
+
+            <strong th:text="${daysUntilWedding}"></strong>
+            days until the wedding
+
+        </p>
+
     </div>
-
-    <br>
-
-    <div>
-        <label for="weddingDate">Wedding date:</label>
-        <input type="date"
-               id="weddingDate"
-               th:field="*{weddingDate}">
-    </div>
-
-    <br>
-
-    <div>
-        <label for="budget">Budget:</label>
-        <input type="number"
-               id="budget"
-               step="0.01"
-               th:field="*{budget}">
-    </div>
-
-
-    <hr>
-    <h2>Dashboard</h2>
 
     <div th:if="${wedding.id != null}">
 
-        <h3 th:text="${wedding.partnerOneName + ' & ' + wedding.partnerTwoName}"></h3>
+        <h2 class="mb-4">Dashboard</h2>
 
-        <p>Wedding date:
-            <strong th:text="${wedding.weddingDate}"></strong>
-        </p>
+        <div class="row g-4">
 
-        <p th:if="${daysUntilWedding != null}">
-            Days until wedding:
-            <strong th:text="${daysUntilWedding}"></strong>
-        </p>
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm h-100">
 
-        <hr>
+                    <div class="card-body">
 
-        <h3>Guests</h3>
+                        <h5 class="card-title">
+                            Guests
+                        </h5>
 
-        <p>
-            Invited guests:
-            <strong th:text="${guestCount}"></strong>
-        </p>
+                        <p class="mb-1">
+                            Invited:
+                            <strong th:text="${guestCount}"></strong>
+                        </p>
 
-        <p>
-            Confirmed guests:
-            <strong th:text="${confirmedGuestCount}"></strong>
-        </p>
+                        <p class="mb-1">
+                            Confirmed:
+                            <strong th:text="${confirmedGuestCount}"></strong>
+                        </p>
 
-        <p>
-            Pending guests:
-            <strong th:text="${pendingGuestCount}"></strong>
-        </p>
+                        <p class="mb-1">
+                            Awaiting RSVP:
+                            <strong th:text="${invitedGuestCount}"></strong>
+                        </p>
 
-        <p>
-            Declined guests:
-            <strong th:text="${declinedGuestCount}"></strong>
-        </p>
+                        <p class="mb-1">
+                            Declined:
+                            <strong th:text="${declinedGuestCount}"></strong>
+                        </p>
 
-        <h3>Tasks</h3>
+                        <a th:href="@{/guests}"
+                           class="btn btn-outline-dark btn-sm">
+                            Manage guests
+                        </a>
 
-        <p>
-            Total tasks:
-            <strong th:text="${taskCount}"></strong>
-        </p>
+                    </div>
+                </div>
+            </div>
 
-        <p>
-            Completed tasks:
-            <strong th:text="${completedTaskCount}"></strong>
-        </p>
 
-        <hr>
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm h-100">
 
-        <h3>Budget</h3>
+                    <div class="card-body">
 
-        <p>
-            Wedding budget:
-            <strong th:text="${wedding.budget}"></strong>
-        </p>
+                        <h5 class="card-title">
+                            Tasks
+                        </h5>
 
-        <p>
-            Total expenses:
-            <strong th:text="${totalExpenses}"></strong>
-        </p>
+                        <p class="mb-1">
+                            Total:
+                            <strong th:text="${taskCount}"></strong>
+                        </p>
 
-        <p>
-            Remaining budget:
-            <strong th:text="${remainingBudget}"></strong>
-        </p>
+                        <p class="mb-1">
+                            Completed:
+                            <strong th:text="${completedTaskCount}"></strong>
+                        </p>
 
-        <hr>
+                        <a th:href="@{/tasks}"
+                           class="btn btn-outline-dark btn-sm">
+                            Manage tasks
+                        </a>
 
-        <h3>Vendors</h3>
+                    </div>
+                </div>
+            </div>
 
-        <p>
-            Total vendors:
-            <strong th:text="${vendorCount}"></strong>
-        </p>
 
-        <p>
-            Booked vendors:
-            <strong th:text="${bookedVendorCount}"></strong>
-        </p>
+            <div class="col-md-6 col-lg-3">
+                <div class=" card shadow-sm h-100">
 
-        <h3>Expenses by category</h3>
+                    <div class="card-body">
 
-        <div style="width: 300px; height: 300px;">
-            <canvas id="expenseChart"></canvas>
+                        <h5 class="card-title">
+                            Budget
+                        </h5>
+
+                        <p class="mb-1">
+                            Budget:
+                            <strong th:text="${wedding.budget}"></strong>
+                        </p>
+
+                        <p class="mb-1">
+                            Expenses:
+                            <strong th:text="${totalExpenses}"></strong>
+                        </p>
+
+                        <p class="mb-1">
+                            Remaining:
+                            <strong th:text="${remainingBudget}"></strong>
+                        </p>
+
+                        <a th:href="@{/expenses}"
+                           class="btn btn-outline-dark btn-sm">
+                            Manage expenses
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6 col-lg-3">
+                <div class=" card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            Vendors
+                        </h5>
+
+                        <p class="mb-1">
+                            Total:
+                            <strong th:text="${vendorCount}"></strong>
+                        </p>
+
+                        <p class="mb-1">
+                            Booked:
+                            <strong th:text="${bookedVendorCount}"></strong>
+                        </p>
+
+                        <a th:href="@{/vendors}"
+                           class="btn btn-outline-dark btn-sm">
+                            Manage vendors
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
 
+        <div class="card shadow-sm mt-4">
+
+            <div class="card-body">
+
+                <h5 class="card-title mb-4">
+                    Expenses by category
+                </h5>
+
+                <div style="width: 250px; height:250px;"
+                     class="mx-auto">
+
+                    <canvas id="expenseChart"></canvas>
+
+                </div>
+            </div>
+        </div>
 
     </div>
 
-    <br>
 
-    <a th:href="@{/guests}">Manage guests</a>
+    <div class="card shadow-sm mt-4">
 
-    <br><br>
+        <div class="card-body">
 
-    <a th:href="@{/tasks}">Manage tasks</a>
+            <h3 class="card-title mb-4">
+                Wedding details
+            </h3>
 
-    <br><br>
+            <form th:action="@{/wedding/save}"
+                  th:object="${wedding}"
+                  method="post">
 
-    <a th:href="@{/expenses}">Manage expenses</a>
+                <div class="row g-3">
 
-    <br><br>
+                    <div class="col-md-6">
 
-    <a th:href="@{/vendors}">Manage vendors</a>
+                        <label for="partnerOneName"
+                               class="form-label">
+                            Partner 1
+                        </label>
 
-    <br><br>
+                        <input type="text"
+                               id="partnerOneName"
+                               th:field="*{partnerOneName}"
+                               class="form-control">
+                    </div>
 
-    <button type="submit">Save</button>
-</form>
+                    <div class="col-md-6">
+
+                        <label for="partnerTwoName"
+                               class="form-label">
+                            Partner 2
+                        </label>
+
+                        <input type="text"
+                               id="partnerTwoName"
+                               th:field="*{partnerTwoName}"
+                               class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label for="weddingDate"
+                               class="form-label">
+                            Wedding date
+                        </label>
+
+                        <input type="date"
+                               id="weddingDate"
+                               th:field="*{weddingDate}"
+                               class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label for="budget"
+                               class="form-label">
+                            Budget
+                        </label>
+
+                        <input type="number"
+                               id="budget"
+                               step="0.01"
+                               th:field="*{budget}"
+                               class="form-control">
+                    </div>
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-dark mt-4">
+                    Save wedding details
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -196,6 +320,7 @@
             }
         });
     }
+
 
 </script>
 </body>

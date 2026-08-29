@@ -44,7 +44,11 @@ public class GuestServiceImpl implements GuestService{
 
     @Override
     public long countGuests(Long weddingId){
-        return guestRepository.findByWeddingId(weddingId).size();
+
+        return guestRepository.findByWeddingId(weddingId)
+                .stream()
+                .mapToLong(guest -> guest.isPlusOne() ? 2 : 1)
+                .sum();
     }
 
     @Override
@@ -52,7 +56,8 @@ public class GuestServiceImpl implements GuestService{
         return guestRepository.findByWeddingId(weddingId)
                 .stream()
                 .filter(guest -> guest.getRsvpStatus() == RsvpStatus.CONFIRMED)
-                .count();
+                .mapToLong(guest -> guest.isPlusOne() ? 2 : 1)
+                .sum();
     }
 
     @Override
@@ -60,15 +65,17 @@ public class GuestServiceImpl implements GuestService{
         return guestRepository.findByWeddingId(weddingId)
                 .stream()
                 .filter(guest -> guest.getRsvpStatus() == RsvpStatus.DECLINED)
-                .count();
+                .mapToLong(guest -> guest.isPlusOne() ? 2 : 1)
+                .sum();
     }
 
     @Override
-    public long countPendingGuests(Long weddingId){
+    public long countInvitedGuests(Long weddingId){
         return guestRepository.findByWeddingId(weddingId)
                 .stream()
                 .filter(guest -> guest.getRsvpStatus() == RsvpStatus.INVITED)
-                .count();
+                .mapToLong(guest -> guest.isPlusOne() ? 2 : 1)
+                .sum();
     }
 
 }

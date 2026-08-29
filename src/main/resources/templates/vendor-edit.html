@@ -3,104 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Vendor | Wedding Planner</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
-<h1>Edit vendor</h1>
+<nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
+    <div class="container">
 
-<form th:action="@{/vendors/update}"
-      th:object="${vendor}"
-      method="post">
+        <a class="navbar-brand fw-bold"
+           th:href="@{/}">
+            Wedding Planner
+        </a>
 
-  <input type="hidden" th:field="*{id}">
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" th:href="@{/}">Dashboard</a>
+            <a class="nav-link" th:href="@{/guests}">Guests</a>
+            <a class="nav-link" th:href="@{/tasks}">Tasks</a>
+            <a class="nav-link" th:href="@{/expenses}">Expenses</a>
+            <a class="nav-link active" th:href="@{/vendors}">Vendors</a>
+        </div>
 
-  <div>
-    <label for="name">Name:</label>
-    <input type="text"
-           id="name"
-           th:field="*{name}"
-           required>
-  </div>
+    </div>
+</nav>
 
-  <br>
+<div class="container py-5">
 
-  <div>
-    <label for="serviceType">Sevice type:</label>
+    <div class="mb-4">
 
-    <select id="serviceType"
-            th:field="*{serviceType}"
-            required>
+        <h1 class="fw-bold">
+            Edit vendor
+        </h1>
 
-      <option th:each="type : ${serviceTypes}"
-              th:value="${type}"
-              th:text="${type}">
-      </option>
+        <p class="text-muted">
+            Update vendor information, pricing and booking status.
+        </p>
 
-    </select>
-  </div>
+    </div>
 
-  <br>
+    <div class="card shadow-sm">
 
-  <div>
-    <label for="email">Email:</label>
-    <input type="email"
-           id="email"
-           th:field="*{email}">
-  </div>
+        <div class="card-body">
 
-  <br>
+            <form th:action="@{/vendors/update}"
+                  th:object="${vendor}"
+                  method="post">
 
-  <div>
-    <label for="phone">Phone</label>
-    <input type="text"
-           id="phone"
-           th:field="*{phone}">
-  </div>
+                <input type="hidden" th:field="*{id}">
 
-  <br>
+                <div class="row g-3">
 
-  <div>
-    <label for="estimatedPrice">Estimated price:</label>
-    <input type="number"
-           id="estimatedPrice"
-           th:field="*{estimatedPrice}"
-           min="0"
-           step="0.01">
-  </div>
+                    <div class="col-md-6">
 
-  <br>
+                        <label for="name"
+                               class="form-label">
+                            Name
+                        </label>
 
-  <div>
-    <label for="depositAmount">Deposit amount:</label>
-    <input type="number"
-           id="depositAmount"
-           th:field="*{depositAmount}"
-           min="0"
-           step="0.01">
-  </div>
+                        <input type="text"
+                               id="name"
+                               th:field="*{name}"
+                               class="form-control"
+                               required>
+                    </div>
 
-  <br>
+                    <div class="col-md-6">
 
-  <div>
-    <label for="status">Status:</label>
+                        <label for="serviceType"
+                               class="form-label">
+                            Sevice type
+                        </label>
 
-    <select id="status" th:field="*{status}">
-      <option th:each="status : ${statuses}"
-              th:value="${status}"
-              th:text="${status}">
-      </option>
-    </select>
-  </div>
+                        <select id="serviceType"
+                                th:field="*{serviceType}"
+                                class="form-select"
+                                required>
 
-  <br>
+                            <option th:each="type : ${serviceTypes}"
+                                    th:value="${type}"
+                                    th:text="${type}">
+                            </option>
 
-  <button type="submit">Save changes</button>
+                        </select>
 
-</form>
+                    </div>
 
-<br>
+                    <div class="col-md-6">
 
-<a th:href="@{/vendors}">Back to vendors</a>
+                        <label for="email"
+                               class="form-label">
+                            Email
+                        </label>
+
+                        <input type="email"
+                               id="email"
+                               th:field="*{email}"
+                               class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label for="phone"
+                               class="form-label">
+                            Phone
+                        </label>
+
+                        <input type="text"
+                               id="phone"
+                               th:field="*{phone}"
+                               class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label for="estimatedPrice"
+                               class="form-label">
+                            Estimated price
+                        </label>
+
+                        <input type="number"
+                               id="estimatedPrice"
+                               th:field="*{estimatedPrice}"
+                               min="0"
+                               step="0.01"
+                               class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label for="depositAmount"
+                               class="form-label">
+                            Deposit amount
+                        </label>
+
+                        <input type="number"
+                               id="depositAmount"
+                               th:field="*{depositAmount}"
+                               min="0"
+                               step="0.01"
+                               class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label for="status"
+                               class="form-label">
+                            Status
+                        </label>
+
+                        <select id="status"
+                                th:field="*{status}"
+                                class="form-select">
+
+                            <option th:each="status : ${statuses}"
+                                    th:value="${status}"
+                                    th:text="${status}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="mt-4">
+
+                        <button type="submit"
+                                class="btn btn-outline-dark">
+                            Save changes
+                        </button>
+
+                        <a th:href="@{/vendors}"
+                           class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+
+                    </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>
