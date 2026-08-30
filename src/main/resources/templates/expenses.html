@@ -23,6 +23,14 @@
             <a class="nav-link" th:href="@{/tasks}">Tasks</a>
             <a class="nav-link active" th:href="@{/expenses}">Expenses</a>
             <a class="nav-link" th:href="@{/vendors}">Vendors</a>
+            <form th:action="@{/logout}"
+                  method="post"
+                  class="ms-3">
+                <button type="submit"
+                        class="btn btn-outline-danger btn-sm">
+                    Logout
+                </button>
+            </form>
         </div>
 
     </div>
@@ -54,7 +62,7 @@
                         Wedding budget
                     </h6>
 
-                    <h3 th:text="${budget}"></h3>
+                    <h4 th:text="${budget != null ? budget : 'Not set'}"></h4>
 
                 </div>
 
@@ -108,7 +116,7 @@
                         Remaining budget
                     </h6>
 
-                    <h3 th:text="${remainingBudget}"></h3>
+                    <h4 th:text="${remainingBudget != null ? remainingBudget : 'Not available'}"></h4>
 
                 </div>
 

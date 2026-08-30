@@ -17,11 +17,11 @@ public interface VendorService {
 
     List<Vendor> getVendorsByStatusAndServiceType(Long weddingId, VendorStatus status, VendorServiceType serviceType);
 
-    Optional<Vendor> getVendorById(Long id);
+    Optional<Vendor> getVendorById(Long id, Long weddingId);
 
     Vendor saveVendor(Vendor vendor);
 
-    void deleteVendor(Long id);
+    void deleteVendor(Long id, Long weddingId);
 
     long countVendors(Long weddingId);
 

@@ -34,8 +34,8 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public Optional<Task> getTaskById(Long id){
-        return taskRepository.findById(id);
+    public Optional<Task> getTaskById(Long id, Long weddingId){
+        return taskRepository.findByIdAndWeddingId(id, weddingId);
     }
 
     @Override
@@ -44,8 +44,8 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public void deleteTask(Long id){
-        taskRepository.deleteById(id);
+    public void deleteTask(Long id, Long weddingId){
+        taskRepository.findByIdAndWeddingId(id, weddingId).ifPresent(taskRepository::delete);
     }
 
     @Override

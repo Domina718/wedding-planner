@@ -30,7 +30,11 @@ public class ExpenseController {
 
         BigDecimal totalExpenses = expenseService.getTotalExpenses(wedding.getId());
 
-        BigDecimal remainingBudget = wedding.getBudget().subtract(totalExpenses);
+        BigDecimal remainingBudget = null;
+
+        if(wedding.getBudget() != null){
+            remainingBudget = wedding.getBudget().subtract(totalExpenses);
+        }
 
         List<Expense> expenses;
 
@@ -68,7 +72,11 @@ public class ExpenseController {
 
     @GetMapping("/expenses/edit/{id}")
     public String editExpense(@PathVariable Long id, Model model){
-        Expense expense = expenseService.getExpenseById(id)
+
+        Wedding wedding = weddingService.getWedding()
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
+
+        Expense expense = expenseService.getExpenseById(id, wedding.getId())
                 .orElseThrow(()-> new IllegalArgumentException("Expense not found."));
 
         model.addAttribute("expense", expense);
@@ -79,18 +87,32 @@ public class ExpenseController {
 
     @PostMapping("/expenses/update")
     public String updateExpense(@ModelAttribute Expense expense){
-        Wedding wedding = weddingService.getWedding()
-                .orElseThrow(()-> new IllegalStateException("Wedding has not been created yet."));
 
-        expense.setWedding(wedding);
-        expenseService.saveExpense(expense);
+        Wedding wedding = weddingService.getWedding()
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
+
+        Expense existingExpense = expenseService
+                .getExpenseById(expense.getId(), wedding.getId())
+                        .orElseThrow(()-> new IllegalArgumentException("Expense not found."));
+
+        existingExpense.setDescription(expense.getDescription());
+        existingExpense.setAmount(expense.getAmount());
+        existingExpense.setCategory(expense.getCategory());
+        existingExpense.setDate(expense.getDate());
+        existingExpense.setPaid(expense.isPaid());
+
+        expenseService.saveExpense(existingExpense);
 
         return "redirect:/expenses";
     }
 
     @PostMapping("/expenses/delete/{id}")
     public String deleteExpense(@PathVariable Long id){
-        expenseService.deleteExpense(id);
+
+        Wedding wedding = weddingService.getWedding()
+                        .orElseThrow(()-> new IllegalStateException("Wedding not found."));
+
+        expenseService.deleteExpense(id, wedding.getId());
 
         return "redirect:/expenses";
     }

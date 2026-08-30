@@ -68,7 +68,11 @@ public class VendorController {
 
     @GetMapping("/vendors/edit/{id}")
     public String editVendor(@PathVariable Long id, Model model){
-        Vendor vendor = vendorService.getVendorById(id)
+
+        Wedding wedding = weddingService.getWedding()
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
+
+        Vendor vendor = vendorService.getVendorById(id, wedding.getId())
                 .orElseThrow(()-> new IllegalArgumentException("Vendor not found."));
 
         model.addAttribute("vendor", vendor);
@@ -80,18 +84,33 @@ public class VendorController {
 
     @PostMapping("/vendors/update")
     public String updateVendor(@ModelAttribute Vendor vendor){
-        Wedding wedding = weddingService.getWedding()
-                .orElseThrow(()-> new IllegalStateException("Wedding has not been created yet."));
 
-        vendor.setWedding(wedding);
-        vendorService.saveVendor(vendor);
+        Wedding wedding = weddingService.getWedding()
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
+
+        Vendor existingVendor = vendorService.getVendorById(vendor.getId(), wedding.getId())
+                        .orElseThrow(()-> new IllegalArgumentException("Vendor not found."));
+
+        existingVendor.setName(vendor.getName());
+        existingVendor.setServiceType(vendor.getServiceType());
+        existingVendor.setEmail(vendor.getEmail());
+        existingVendor.setPhone(vendor.getPhone());
+        existingVendor.setEstimatedPrice(vendor.getEstimatedPrice());
+        existingVendor.setDepositAmount(vendor.getDepositAmount());
+        existingVendor.setStatus(vendor.getStatus());
+
+        vendorService.saveVendor(existingVendor);
 
         return"redirect:/vendors";
     }
 
     @PostMapping("/vendors/delete/{id}")
     public String deleteVendor(@PathVariable Long id){
-        vendorService.deleteVendor(id);
+
+        Wedding wedding = weddingService.getWedding()
+                        .orElseThrow(()-> new IllegalStateException("Wedding not found."));
+
+        vendorService.deleteVendor(id, wedding.getId());
 
         return "redirect:/vendors";
     }

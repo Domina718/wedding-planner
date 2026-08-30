@@ -9,11 +9,11 @@ public interface GuestService {
 
     List<Guest> getGuestsForWedding(Long weddingId);
 
-    Optional<Guest> getGuestById(Long id);
+    Optional<Guest> getGuestById(Long id, Long weddingId);
 
     Guest saveGuest(Guest guest);
 
-    void deleteGuest (Long id);
+    void deleteGuest (Long id, Long weddingId);
 
     long countGuests(Long weddingId);
 

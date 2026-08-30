@@ -15,11 +15,11 @@ public interface TaskService {
 
     List<Task> getTasksByPriority(Long weddingId, TaskPriority priority);
 
-    Optional<Task> getTaskById(Long id);
+    Optional<Task> getTaskById(Long id, Long weddingId);
 
     Task saveTask(Task task);
 
-    void deleteTask(Long id);
+    void deleteTask(Long id, Long weddingId);
 
     long countTasks(Long weddingId);
 

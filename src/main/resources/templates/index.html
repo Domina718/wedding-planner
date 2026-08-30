@@ -23,6 +23,14 @@
             <a class="nav-link" th:href="@{/tasks}">Tasks</a>
             <a class="nav-link" th:href="@{/expenses}">Expenses</a>
             <a class="nav-link" th:href="@{/vendors}">Vendors</a>
+            <form th:action="@{/logout}"
+                  method="post"
+                  class="ms-3">
+                <button type="submit"
+                        class="btn btn-outline-danger btn-sm">
+                    Logout
+                </button>
+            </form>
         </div>
 
     </div>
@@ -30,14 +38,27 @@
 
 <div class="container py-5">
 
-    <div th:if="${wedding.id != null}"
+    <div th:if="${wedding.partnerOneName == null and wedding.partnerTwoName == null}"
+         class="alert alert-info mb-4">
+
+        <h4 class="alert-heading">Welcome to Wedding Planner!</h4>
+
+        <p class="mb-0">
+            Your planner is ready. You can start adding guests, tasks
+            expenses and vendors right away or enter your wedding details below.
+        </p>
+
+    </div>
+
+    <div th:if="${wedding.partnerOneName != null and wedding.partnerTwoName != null}"
          class="text-center mb-5">
 
         <h1 class="display-5 fw-bold"
             th:text="${wedding.partnerOneName + ' & ' + wedding.partnerTwoName}">
         </h1>
 
-        <p class="lead mb-1"
+        <p th:if="${wedding.weddingDate != null}"
+           class="lead mb-1"
            th:text="${wedding.weddingDate}">
         </p>
 
@@ -136,7 +157,7 @@
 
                         <p class="mb-1">
                             Budget:
-                            <strong th:text="${wedding.budget}"></strong>
+                            <strong th:text="${wedding.budget != null ? wedding.budget : 'Not set'}"></strong>
                         </p>
 
                         <p class="mb-1">
@@ -146,7 +167,7 @@
 
                         <p class="mb-1">
                             Remaining:
-                            <strong th:text="${remainingBudget}"></strong>
+                            <strong th:text="${remainingBudget != null ? remainingBudget : 'Not available'}"></strong>
                         </p>
 
                         <a th:href="@{/expenses}"
@@ -189,7 +210,8 @@
 
         </div>
 
-        <div class="card shadow-sm mt-4">
+        <div th:if="${totalExpenses != null and totalExpenses.signum() > 0}"
+             class="card shadow-sm mt-4">
 
             <div class="card-body">
 

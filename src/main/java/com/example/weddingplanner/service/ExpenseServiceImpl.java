@@ -31,8 +31,8 @@ public class ExpenseServiceImpl implements ExpenseService{
     }
 
     @Override
-    public Optional<Expense> getExpenseById(Long id){
-        return expenseRepository.findById(id);
+    public Optional<Expense> getExpenseById(Long id, Long weddingId){
+        return expenseRepository.findByIdAndWeddingId(id, weddingId);
     }
 
     @Override
@@ -41,8 +41,8 @@ public class ExpenseServiceImpl implements ExpenseService{
     }
 
     @Override
-    public void deleteExpense(Long id){
-        expenseRepository.deleteById(id);
+    public void deleteExpense(Long id, Long weddingId){
+        expenseRepository.findByIdAndWeddingId(id, weddingId).ifPresent(expenseRepository::delete);
     }
 
     @Override

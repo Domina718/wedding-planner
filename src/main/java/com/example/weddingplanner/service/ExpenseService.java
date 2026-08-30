@@ -14,11 +14,11 @@ public interface ExpenseService {
 
     List<Expense> getExpensesByCategory(Long weddingId, ExpenseCategory category);
 
-    Optional<Expense> getExpenseById(Long id);
+    Optional<Expense> getExpenseById(Long id, Long weddingId);
 
     Expense saveExpense(Expense expense);
 
-    void deleteExpense(Long id);
+    void deleteExpense(Long id, Long weddingId);
 
     BigDecimal getTotalExpenses(Long weddingId);
 

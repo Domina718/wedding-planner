@@ -23,8 +23,8 @@ public class GuestServiceImpl implements GuestService{
     }
 
     @Override
-    public Optional<Guest> getGuestById(Long id){
-        return guestRepository.findById(id);
+    public Optional<Guest> getGuestById(Long id, Long weddingId){
+        return guestRepository.findByIdAndWeddingId(id, weddingId);
     }
 
     @Override
@@ -38,8 +38,8 @@ public class GuestServiceImpl implements GuestService{
     }
 
     @Override
-    public void deleteGuest(Long id){
-        guestRepository.deleteById(id);
+    public void deleteGuest(Long id, Long weddingId){
+        guestRepository.findByIdAndWeddingId(id, weddingId).ifPresent(guestRepository::delete);
     }
 
     @Override

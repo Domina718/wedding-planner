@@ -66,7 +66,10 @@ public class TaskController {
 
     @GetMapping("/tasks/edit/{id}")
     public String editTask(@PathVariable Long id, Model model){
-        Task task = taskService.getTaskById(id)
+
+        Wedding wedding = weddingService.getWedding()
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
+        Task task = taskService.getTaskById(id, wedding.getId())
                 .orElseThrow(()-> new IllegalArgumentException("Task not found."));
 
         model.addAttribute("task", task);
@@ -79,17 +82,29 @@ public class TaskController {
     @PostMapping("/tasks/update")
     public String updateTask(@ModelAttribute Task task) {
         Wedding wedding = weddingService.getWedding()
-                .orElseThrow(()-> new IllegalStateException("Wedding has not been created yet."));
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
-        task.setWedding(wedding);
-        taskService.saveTask(task);
+        Task existingTask = taskService.getTaskById(task.getId(), wedding.getId())
+                        .orElseThrow(()->new IllegalArgumentException("Task not found."));
+
+        existingTask.setTitle(task.getTitle());
+        existingTask.setDescription(task.getDescription());
+        existingTask.setDueDate(task.getDueDate());
+        existingTask.setPriority(task.getPriority());
+        existingTask.setStatus(task.getStatus());
+
+        taskService.saveTask(existingTask);
 
         return "redirect:/tasks";
     }
 
     @PostMapping("/tasks/delete/{id}")
     public String deleteTask(@PathVariable Long id){
-        taskService.deleteTask(id);
+
+        Wedding wedding = weddingService.getWedding()
+                        .orElseThrow(()-> new IllegalStateException("Wedding not found."));
+
+        taskService.deleteTask(id, wedding.getId());
 
         return "redirect:/tasks";
     }

@@ -48,7 +48,11 @@ public class GuestController {
 
     @GetMapping("/guests/edit/{id}")
     public String editGuest(@PathVariable Long id, Model model){
-        Guest guest = guestService.getGuestById(id)
+
+        Wedding wedding = weddingService.getWedding()
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
+
+        Guest guest = guestService.getGuestById(id, wedding.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Guest not found"));
 
         model.addAttribute("guest", guest);
@@ -59,18 +63,34 @@ public class GuestController {
 
     @PostMapping("/guests/update")
     public String updateGuest(@ModelAttribute Guest guest){
-        Wedding wedding = weddingService.getWedding()
-                .orElseThrow(()-> new IllegalStateException("Wedding has not been created yet"));
 
-        guest.setWedding(wedding);
-        guestService.saveGuest(guest);
+        Wedding wedding = weddingService.getWedding()
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
+
+        Guest existingGuest = guestService.getGuestById(guest.getId(), wedding.getId())
+                        .orElseThrow(()->new IllegalStateException("Guest not found."));
+
+        existingGuest.setFirstName(guest.getFirstName());
+        existingGuest.setLastName(guest.getLastName());
+        existingGuest.setEmail(guest.getEmail());
+        existingGuest.setPhone(guest.getPhone());
+        existingGuest.setRsvpStatus(guest.getRsvpStatus());
+        existingGuest.setPlusOne(guest.isPlusOne());
+        existingGuest.setPlusOneFirstName(guest.getPlusOneFirstName());
+        existingGuest.setPlusOneLastName(guest.getPlusOneLastName());
+
+        guestService.saveGuest(existingGuest);
 
         return "redirect:/guests";
     }
 
     @PostMapping("/guests/delete/{id}")
     public String deleteGuest(@PathVariable Long id){
-        guestService.deleteGuest(id);
+
+        Wedding wedding = weddingService.getWedding()
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
+
+        guestService.deleteGuest(id, wedding.getId());
 
         return "redirect:/guests";
     }

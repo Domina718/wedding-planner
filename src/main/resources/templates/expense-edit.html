@@ -23,6 +23,14 @@
             <a class="nav-link" th:href="@{/tasks}">Tasks</a>
             <a class="nav-link active" th:href="@{/expenses}">Expenses</a>
             <a class="nav-link" th:href="@{/vendors}">Vendors</a>
+            <form th:action="@{/logout}"
+                  method="post"
+                  class="ms-3">
+                <button type="submit"
+                        class="btn btn-outline-danger btn-sm">
+                    Logout
+                </button>
+            </form>
         </div>
 
     </div>

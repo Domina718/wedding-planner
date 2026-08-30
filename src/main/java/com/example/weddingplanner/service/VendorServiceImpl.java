@@ -39,8 +39,8 @@ public class VendorServiceImpl implements VendorService{
     }
 
     @Override
-    public Optional<Vendor> getVendorById(Long id){
-        return vendorRepository.findById(id);
+    public Optional<Vendor> getVendorById(Long id, Long weddingId){
+        return vendorRepository.findByIdAndWeddingId(id, weddingId);
     }
 
     @Override
@@ -49,8 +49,8 @@ public class VendorServiceImpl implements VendorService{
     }
 
     @Override
-    public void deleteVendor(Long id){
-        vendorRepository.deleteById(id);
+    public void deleteVendor(Long id, Long weddingId){
+        vendorRepository.findByIdAndWeddingId(id, weddingId).ifPresent(vendorRepository::delete);
     }
 
     @Override

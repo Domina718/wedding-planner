@@ -29,4 +29,8 @@ public class Wedding {
 
     private BigDecimal budget;
 
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true)
+    private User user;
+
 }

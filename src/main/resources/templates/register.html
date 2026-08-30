@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Wedding Planner</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container-py">
+    <div class="row justify-content-center">
+
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+
+                    <h2 class="text-center mb-4">
+                        Create account
+                    </h2>
+
+                    <div th:if="${error}"
+                         class="alert alert-danger"
+                         th:text="${error}">
+                    </div>
+
+                    <form th:action="@{/register}"
+                          th:object="${registerRequest}"
+                          method="post">
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                First name
+                            </label>
+
+                            <input type="text"
+                                   th:field="*{firstName}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'"
+                                   required>
+
+                            <div class="invalid-feedback"
+                                 th:errors="*{firstName}">
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Last name
+                            </label>
+
+                            <input type="text"
+                                   th:field="*{lastName}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'"
+                                   required>
+
+                            <div class="invalid-feedback"
+                                 th:errors="*{lastName}">
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            <input type="email"
+                                   th:field="*{email}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+                                   required>
+
+                            <div class="invalid-feedback"
+                                 th:errors="*{email}">
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <input type="password"
+                                   th:field="*{password}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
+                                   required>
+
+                            <div class="invalid-feedback"
+                                 th:errors="*{password}">
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Confirm password
+                            </label>
+
+                            <input type="password"
+                                   th:field="*{confirmPassword}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'"
+                                   required>
+
+                            <div class="invalid-feedback"
+                                 th:errors="*{confirmPassword}">
+                            </div>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-dark w-100">
+                            Register
+                        </button>
+
+                    </form>
+
+                    <p class="text-center mt-3 mb-0">
+                        Already have an account?
+                        <a th:href="@{/login}">
+                            Login
+                        </a>
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
