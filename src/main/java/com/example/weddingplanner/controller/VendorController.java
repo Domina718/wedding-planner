@@ -1,5 +1,6 @@
 package com.example.weddingplanner.controller;
 
+import com.example.weddingplanner.exception.ResourceNotFoundException;
 import com.example.weddingplanner.model.Vendor;
 import com.example.weddingplanner.model.VendorServiceType;
 import com.example.weddingplanner.model.VendorStatus;
@@ -29,7 +30,7 @@ public class VendorController {
                               Model model){
 
         Wedding wedding = weddingService.getWedding()
-                .orElseThrow(()-> new IllegalStateException("Wedding has not been created yet."));
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         List<Vendor> vendors;
 
@@ -58,7 +59,7 @@ public class VendorController {
     public String saveVendor(@ModelAttribute Vendor vendor){
 
         Wedding wedding = weddingService.getWedding()
-                .orElseThrow(()-> new IllegalStateException("Wedding has not been created yet."));
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         vendor.setWedding(wedding);
         vendorService.saveVendor(vendor);
@@ -73,7 +74,7 @@ public class VendorController {
                 .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         Vendor vendor = vendorService.getVendorById(id, wedding.getId())
-                .orElseThrow(()-> new IllegalArgumentException("Vendor not found."));
+                .orElseThrow(()-> new ResourceNotFoundException("Vendor not found."));
 
         model.addAttribute("vendor", vendor);
         model.addAttribute("statuses", VendorStatus.values());
@@ -89,7 +90,7 @@ public class VendorController {
                 .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         Vendor existingVendor = vendorService.getVendorById(vendor.getId(), wedding.getId())
-                        .orElseThrow(()-> new IllegalArgumentException("Vendor not found."));
+                        .orElseThrow(()-> new ResourceNotFoundException("Vendor not found."));
 
         existingVendor.setName(vendor.getName());
         existingVendor.setServiceType(vendor.getServiceType());

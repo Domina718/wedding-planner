@@ -1,5 +1,6 @@
 package com.example.weddingplanner.controller;
 
+import com.example.weddingplanner.exception.ResourceNotFoundException;
 import com.example.weddingplanner.model.Guest;
 import com.example.weddingplanner.model.RsvpStatus;
 import com.example.weddingplanner.model.Wedding;
@@ -26,7 +27,7 @@ public class GuestController {
     @GetMapping("/guests")
     public String showGuests(Model model){
         Wedding wedding = weddingService.getWedding()
-                .orElseThrow(()->new IllegalStateException("Wedding has not been created yet."));
+                .orElseThrow(()->new IllegalStateException("Wedding not found."));
 
         model.addAttribute("guests", guestService.getGuestsForWedding(wedding.getId()));
         model.addAttribute("guest", new Guest());
@@ -38,7 +39,7 @@ public class GuestController {
     @PostMapping("/guests/save")
     public String saveGuest(@ModelAttribute Guest guest){
         Wedding wedding = weddingService.getWedding()
-                .orElseThrow(()-> new IllegalStateException("Wedding has not been created yet."));
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         guest.setWedding(wedding);
         guestService.saveGuest(guest);
@@ -53,7 +54,7 @@ public class GuestController {
                 .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         Guest guest = guestService.getGuestById(id, wedding.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Guest not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Guest not found"));
 
         model.addAttribute("guest", guest);
         model.addAttribute("rsvpStatuses", RsvpStatus.values());
@@ -68,7 +69,7 @@ public class GuestController {
                 .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         Guest existingGuest = guestService.getGuestById(guest.getId(), wedding.getId())
-                        .orElseThrow(()->new IllegalStateException("Guest not found."));
+                        .orElseThrow(()->new ResourceNotFoundException("Guest not found."));
 
         existingGuest.setFirstName(guest.getFirstName());
         existingGuest.setLastName(guest.getLastName());

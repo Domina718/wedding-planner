@@ -1,5 +1,6 @@
 package com.example.weddingplanner.controller;
 
+import com.example.weddingplanner.exception.ResourceNotFoundException;
 import com.example.weddingplanner.model.Task;
 import com.example.weddingplanner.model.TaskPriority;
 import com.example.weddingplanner.model.TaskStatus;
@@ -30,7 +31,7 @@ public class TaskController {
             Model model){
 
         Wedding wedding = weddingService.getWedding()
-                .orElseThrow(()-> new IllegalStateException("Wedding has not been created yet."));
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         List<Task> tasks;
 
@@ -56,7 +57,7 @@ public class TaskController {
     public String saveTask(@ModelAttribute Task task){
 
         Wedding wedding = weddingService.getWedding()
-                .orElseThrow(()-> new IllegalStateException("Wedding has not been created yet."));
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         task.setWedding(wedding);
         taskService.saveTask(task);
@@ -69,8 +70,9 @@ public class TaskController {
 
         Wedding wedding = weddingService.getWedding()
                 .orElseThrow(()-> new IllegalStateException("Wedding not found."));
+
         Task task = taskService.getTaskById(id, wedding.getId())
-                .orElseThrow(()-> new IllegalArgumentException("Task not found."));
+                .orElseThrow(()-> new ResourceNotFoundException("Task not found."));
 
         model.addAttribute("task", task);
         model.addAttribute("statuses", TaskStatus.values());
@@ -85,7 +87,7 @@ public class TaskController {
                 .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         Task existingTask = taskService.getTaskById(task.getId(), wedding.getId())
-                        .orElseThrow(()->new IllegalArgumentException("Task not found."));
+                        .orElseThrow(()->new ResourceNotFoundException("Task not found."));
 
         existingTask.setTitle(task.getTitle());
         existingTask.setDescription(task.getDescription());

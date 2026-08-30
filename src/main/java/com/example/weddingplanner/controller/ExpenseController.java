@@ -1,5 +1,6 @@
 package com.example.weddingplanner.controller;
 
+import com.example.weddingplanner.exception.ResourceNotFoundException;
 import com.example.weddingplanner.model.Expense;
 import com.example.weddingplanner.model.ExpenseCategory;
 import com.example.weddingplanner.model.Wedding;
@@ -26,7 +27,7 @@ public class ExpenseController {
     @GetMapping("/expenses")
     public String showExpense(@RequestParam(required = false)ExpenseCategory category, Model model){
         Wedding wedding = weddingService.getWedding()
-                .orElseThrow(()-> new IllegalStateException("Wedding has not been created yet."));
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         BigDecimal totalExpenses = expenseService.getTotalExpenses(wedding.getId());
 
@@ -62,7 +63,7 @@ public class ExpenseController {
     public String saveExpense(@ModelAttribute Expense expense){
 
         Wedding wedding = weddingService.getWedding()
-                .orElseThrow(()-> new IllegalStateException("Wedding has not been created yet."));
+                .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         expense.setWedding(wedding);
         expenseService.saveExpense(expense);
@@ -77,7 +78,7 @@ public class ExpenseController {
                 .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
         Expense expense = expenseService.getExpenseById(id, wedding.getId())
-                .orElseThrow(()-> new IllegalArgumentException("Expense not found."));
+                .orElseThrow(()-> new ResourceNotFoundException("Expense not found."));
 
         model.addAttribute("expense", expense);
         model.addAttribute("categories", ExpenseCategory.values());
@@ -93,7 +94,7 @@ public class ExpenseController {
 
         Expense existingExpense = expenseService
                 .getExpenseById(expense.getId(), wedding.getId())
-                        .orElseThrow(()-> new IllegalArgumentException("Expense not found."));
+                        .orElseThrow(()-> new ResourceNotFoundException("Expense not found."));
 
         existingExpense.setDescription(expense.getDescription());
         existingExpense.setAmount(expense.getAmount());
