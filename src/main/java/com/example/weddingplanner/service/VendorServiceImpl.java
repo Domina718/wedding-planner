@@ -6,6 +6,7 @@ import com.example.weddingplanner.model.VendorStatus;
 import com.example.weddingplanner.repository.VendorRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,6 +66,14 @@ public class VendorServiceImpl implements VendorService{
                 .filter(vendor -> vendor.getStatus() == VendorStatus.BOOKED
                     || vendor.getStatus() == VendorStatus.PAID)
                 .count();
+    }
+
+    @Override
+    public BigDecimal getTotalRemainingAmount(Long weddingId){
+        return vendorRepository.findByWeddingId(weddingId)
+                .stream()
+                .map(Vendor::getRemainingAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 }

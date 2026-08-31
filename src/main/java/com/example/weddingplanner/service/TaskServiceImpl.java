@@ -6,6 +6,7 @@ import com.example.weddingplanner.model.TaskStatus;
 import com.example.weddingplanner.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +59,32 @@ public class TaskServiceImpl implements TaskService{
         return taskRepository.findByWeddingId(weddingId)
                 .stream()
                 .filter(task -> task.getStatus() == TaskStatus.COMPLETED)
+                .count();
+    }
+
+    @Override
+    public long countUpcomingTasks(Long weddingId){
+
+        LocalDate today = LocalDate.now();
+
+        return taskRepository.findByWeddingId(weddingId)
+                .stream()
+                .filter(task -> task.getStatus() != TaskStatus.COMPLETED)
+                .filter(task -> task.getDueDate() != null)
+                .filter(task -> !task.getDueDate().isBefore(today))
+                .count();
+    }
+
+    @Override
+    public long countOverdueTasks(Long weddingId){
+
+        LocalDate today = LocalDate.now();
+
+        return taskRepository.findByWeddingId(weddingId)
+                .stream()
+                .filter(task -> task.getStatus() != TaskStatus.COMPLETED)
+                .filter(task -> task.getDueDate() != null)
+                .filter(task -> task.getDueDate().isBefore(today))
                 .count();
     }
 }

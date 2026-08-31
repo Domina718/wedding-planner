@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
 
         model.addAttribute("errorMessage", exception.getMessage());
 
-        return "error";
+        return "resource-not-found";
     }
 
 }

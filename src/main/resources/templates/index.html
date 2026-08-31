@@ -107,6 +107,31 @@
                             <strong th:text="${declinedGuestCount}"></strong>
                         </p>
 
+                        <div class="mb-3">
+
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">Confirmed</small>
+
+                                <small class="text-muted"
+                                       th:text="${rsvpConfirmedPercentage + '%'}">
+                                </small>
+                            </div>
+
+                            <div class="progress"
+                                 role="progressbar"
+                                 aria-label="Confirmed guests">
+
+                                <div class="progress-bar"
+                                     th:style="'width: ' + ${rsvpConfirmedPercentage} + '%'"
+                                     th:attr="aria-valuenow=${rsvpConfirmedPercentage}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                </div>
+
+                            </div>
+
+                        </div>
+
                         <a th:href="@{/guests}"
                            class="btn btn-outline-dark btn-sm">
                             Manage guests
@@ -136,6 +161,41 @@
                             <strong th:text="${completedTaskCount}"></strong>
                         </p>
 
+                        <p class="mb-1">
+                            Upcoming:
+                            <strong th:text="${upcomingTaskCount}"></strong>
+                        </p>
+
+                        <p class="mb-3">
+                            Overdue:
+                            <strong class="text-danger" th:text="${overdueTaskCount}"></strong>
+                        </p>
+
+                        <div class="mb-3">
+
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">Completion</small>
+
+                                <small class="text-muted"
+                                       th:text="${taskCompletionPercentage + '%'}">
+                                </small>
+                            </div>
+
+                            <div class="progress"
+                                 role="progressbar"
+                                 aria-label="Task completion">
+
+                                <div class="progress-bar"
+                                     th:style="'width: ' + ${taskCompletionPercentage} + '%'"
+                                     th:attr="aria-valuenow=${taskCompletionPercentage}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                </div>
+
+                            </div>
+
+                        </div>
+
                         <a th:href="@{/tasks}"
                            class="btn btn-outline-dark btn-sm">
                             Manage tasks
@@ -147,7 +207,7 @@
 
 
             <div class="col-md-6 col-lg-3">
-                <div class=" card shadow-sm h-100">
+                <div class="card shadow-sm h-100">
 
                     <div class="card-body">
 
@@ -170,6 +230,32 @@
                             <strong th:text="${remainingBudget != null ? remainingBudget : 'Not available'}"></strong>
                         </p>
 
+                        <div class="mb-3"
+                             th:if="${wedding.budget != null}">
+
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">Budget used</small>
+
+                                <small class="text-muted"
+                                       th:text="${budgetUsedPercentage + '%'}">
+                                </small>
+                            </div>
+
+                            <div class="progress"
+                                 role="progressbar"
+                                 aria-label="Budget used">
+
+                                <div class="progress-bar"
+                                     th:style="'width: ' + ${budgetProgressWidth} + '%'"
+                                     th:attr="aria-valuenow=${budgetProgressWidth}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                </div>
+
+                            </div>
+
+                        </div>
+
                         <a th:href="@{/expenses}"
                            class="btn btn-outline-dark btn-sm">
                             Manage expenses
@@ -181,7 +267,7 @@
 
 
             <div class="col-md-6 col-lg-3">
-                <div class=" card shadow-sm h-100">
+                <div class="card shadow-sm h-100">
 
                     <div class="card-body">
 
@@ -197,6 +283,11 @@
                         <p class="mb-1">
                             Booked:
                             <strong th:text="${bookedVendorCount}"></strong>
+                        </p>
+
+                        <p class="mb-3">
+                            Still to pay:
+                            <strong th:text="${vendorRemainingAmount}"></strong>
                         </p>
 
                         <a th:href="@{/vendors}"
@@ -240,7 +331,7 @@
             </h3>
 
             <form th:action="@{/wedding/save}"
-                  th:object="${wedding}"
+                  th:object="${weddingRequest}"
                   method="post">
 
                 <div class="row g-3">
@@ -255,7 +346,14 @@
                         <input type="text"
                                id="partnerOneName"
                                th:field="*{partnerOneName}"
-                               class="form-control">
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('partnerOneName')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('partnerOneName')}"
+                             th:errors="*{partnerOneName}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">
@@ -268,7 +366,14 @@
                         <input type="text"
                                id="partnerTwoName"
                                th:field="*{partnerTwoName}"
-                               class="form-control">
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('partnerTwoName')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('partnerTwoName')}"
+                             th:errors="*{partnerTwoName}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">
@@ -281,7 +386,14 @@
                         <input type="date"
                                id="weddingDate"
                                th:field="*{weddingDate}"
-                               class="form-control">
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('weddingDate')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('weddingDate')}"
+                             th:errors="*{weddingDate}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">
@@ -294,8 +406,16 @@
                         <input type="number"
                                id="budget"
                                step="0.01"
+                               min="0.01"
                                th:field="*{budget}"
-                               class="form-control">
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('budget')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('budget')}"
+                             th:errors="*{budget}">
+                        </div>
+
                     </div>
 
                 </div>

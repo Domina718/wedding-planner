@@ -1,13 +1,18 @@
 package com.example.weddingplanner.controller;
 
+import com.example.weddingplanner.dto.ExpenseRequest;
 import com.example.weddingplanner.exception.ResourceNotFoundException;
 import com.example.weddingplanner.model.Expense;
 import com.example.weddingplanner.model.ExpenseCategory;
+import com.example.weddingplanner.model.TaskStatus;
 import com.example.weddingplanner.model.Wedding;
 import com.example.weddingplanner.service.ExpenseService;
 import com.example.weddingplanner.service.WeddingService;
+import jakarta.validation.Valid;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -47,7 +52,7 @@ public class ExpenseController {
         }
 
         model.addAttribute("expenses", expenses);
-        model.addAttribute("expense", new Expense());
+        model.addAttribute("expenseRequest", new ExpenseRequest());
         model.addAttribute("categories", ExpenseCategory.values());
 
         model.addAttribute("budget", wedding.getBudget());
@@ -60,12 +65,43 @@ public class ExpenseController {
     }
 
     @PostMapping("/expenses/save")
-    public String saveExpense(@ModelAttribute Expense expense){
+    public String saveExpense(@Valid @ModelAttribute("expenseRequest") ExpenseRequest expenseRequest,
+                              BindingResult bindingResult,
+                              Model model){
 
         Wedding wedding = weddingService.getWedding()
                 .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
+        if(bindingResult.hasErrors()){
+           BigDecimal totalExpenses = expenseService.getTotalExpenses(wedding.getId());
+
+           BigDecimal remainingBudget = null;
+
+           if(wedding.getBudget() != null){
+               remainingBudget = wedding.getBudget().subtract(totalExpenses);
+           }
+
+           model.addAttribute("expenses", expenseService.getExpensesForWedding(wedding.getId()));
+
+           model.addAttribute("categories", ExpenseCategory.values());
+           model.addAttribute("budget", wedding.getBudget());
+           model.addAttribute("totalExpenses", totalExpenses);
+           model.addAttribute("remainingBudget", remainingBudget);
+           model.addAttribute("totalPaid", expenseService.getTotalPaidExpenses(wedding.getId()));
+
+           return "expenses";
+        }
+
+        Expense expense = new Expense();
+
+        expense.setDescription(expenseRequest.getDescription());
+        expense.setAmount(expenseRequest.getAmount());
+        expense.setCategory(expenseRequest.getCategory());
+        expense.setPaid(expenseRequest.isPaid());
+        expense.setDate(expenseRequest.getDate());
+
         expense.setWedding(wedding);
+
         expenseService.saveExpense(expense);
 
         return "redirect:/expenses";
@@ -80,27 +116,43 @@ public class ExpenseController {
         Expense expense = expenseService.getExpenseById(id, wedding.getId())
                 .orElseThrow(()-> new ResourceNotFoundException("Expense not found."));
 
-        model.addAttribute("expense", expense);
+        ExpenseRequest expenseRequest = new ExpenseRequest();
+
+        expenseRequest.setId(expense.getId());
+        expenseRequest.setDescription(expense.getDescription());
+        expenseRequest.setAmount(expense.getAmount());
+        expenseRequest.setCategory(expense.getCategory());
+        expenseRequest.setPaid(expense.isPaid());
+        expenseRequest.setDate(expense.getDate());
+
+        model.addAttribute("expenseRequest", expenseRequest);
         model.addAttribute("categories", ExpenseCategory.values());
 
         return "expense-edit";
     }
 
     @PostMapping("/expenses/update")
-    public String updateExpense(@ModelAttribute Expense expense){
+    public String updateExpense(@Valid @ModelAttribute("expenseRequest") ExpenseRequest expenseRequest,
+                                BindingResult bindingResult,
+                                Model model){
 
         Wedding wedding = weddingService.getWedding()
                 .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
+        if(bindingResult.hasErrors()){
+            model.addAttribute("categories", ExpenseCategory.values());
+            return "expense-edit";
+        }
+
         Expense existingExpense = expenseService
-                .getExpenseById(expense.getId(), wedding.getId())
+                .getExpenseById(expenseRequest.getId(), wedding.getId())
                         .orElseThrow(()-> new ResourceNotFoundException("Expense not found."));
 
-        existingExpense.setDescription(expense.getDescription());
-        existingExpense.setAmount(expense.getAmount());
-        existingExpense.setCategory(expense.getCategory());
-        existingExpense.setDate(expense.getDate());
-        existingExpense.setPaid(expense.isPaid());
+        existingExpense.setDescription(expenseRequest.getDescription());
+        existingExpense.setAmount(expenseRequest.getAmount());
+        existingExpense.setCategory(expenseRequest.getCategory());
+        existingExpense.setDate(expenseRequest.getDate());
+        existingExpense.setPaid(expenseRequest.isPaid());
 
         expenseService.saveExpense(existingExpense);
 

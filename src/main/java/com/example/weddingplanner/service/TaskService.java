@@ -24,4 +24,6 @@ public interface TaskService {
     long countTasks(Long weddingId);
 
     long countCompletedTasks(Long weddingId);
+    long countUpcomingTasks(Long weddingId);
+    long countOverdueTasks(Long weddingId);
 }

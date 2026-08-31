@@ -78,4 +78,19 @@ public class GuestServiceImpl implements GuestService{
                 .sum();
     }
 
+    @Override
+    public List<Guest> getGuestsByStatus(Long weddingId, RsvpStatus status){
+        return guestRepository.findByWeddingIdAndRsvpStatus(weddingId, status);
+    }
+
+    @Override
+    public List<Guest> searchGuests(Long weddingId, String search){
+        return guestRepository.searchByWedding(weddingId, search);
+    }
+
+    @Override
+    public List<Guest> searchGuestsByStatus(Long weddingId, String search, RsvpStatus status){
+        return guestRepository.searchByWeddingAndStatus(weddingId, status, search);
+    }
+
 }

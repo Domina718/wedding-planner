@@ -53,7 +53,7 @@
         <div class="card-body">
 
             <form th:action="@{/guests/update}"
-                  th:object="${guest}"
+                  th:object="${guestRequest}"
                   method="post">
 
                 <input type="hidden" th:field="*{id}">
@@ -71,7 +71,13 @@
                                id="firstName"
                                th:field="*{firstName}"
                                class="form-control"
-                               required>
+                               th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('firstName')}"
+                             th:errors="*{firstName}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">
@@ -85,7 +91,13 @@
                                id="lastName"
                                th:field="*{lastName}"
                                class="form-control"
-                               required>
+                               th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('lastName')}"
+                             th:errors="*{lastName}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">
@@ -98,7 +110,14 @@
                         <input type="email"
                                id="email"
                                th:field="*{email}"
-                               class="form-control">
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">

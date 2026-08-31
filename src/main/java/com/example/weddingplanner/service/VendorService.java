@@ -4,6 +4,7 @@ import com.example.weddingplanner.model.Vendor;
 import com.example.weddingplanner.model.VendorServiceType;
 import com.example.weddingplanner.model.VendorStatus;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,5 +28,5 @@ public interface VendorService {
 
     long countBookedVendors(Long weddingId);
 
-
+    BigDecimal getTotalRemainingAmount(Long weddingId);
 }

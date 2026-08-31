@@ -1,5 +1,6 @@
 package com.example.weddingplanner.controller;
 
+import com.example.weddingplanner.dto.TaskRequest;
 import com.example.weddingplanner.exception.ResourceNotFoundException;
 import com.example.weddingplanner.model.Task;
 import com.example.weddingplanner.model.TaskPriority;
@@ -7,8 +8,10 @@ import com.example.weddingplanner.model.TaskStatus;
 import com.example.weddingplanner.model.Wedding;
 import com.example.weddingplanner.service.TaskService;
 import com.example.weddingplanner.service.WeddingService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,7 +49,7 @@ public class TaskController {
         }
 
         model.addAttribute("tasks", tasks);
-        model.addAttribute("task", new Task());
+        model.addAttribute("taskRequest", new TaskRequest());
         model.addAttribute("statuses", TaskStatus.values());
         model.addAttribute("priorities", TaskPriority.values());
 
@@ -54,12 +57,31 @@ public class TaskController {
     }
 
     @PostMapping("/tasks/save")
-    public String saveTask(@ModelAttribute Task task){
+    public String saveTask(@Valid @ModelAttribute("taskRequest") TaskRequest taskRequest,
+                           BindingResult bindingResult,
+                           Model model){
 
         Wedding wedding = weddingService.getWedding()
                 .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
+        if(bindingResult.hasErrors()){
+            model.addAttribute("tasks", taskService.getTasksForWedding(wedding.getId()));
+            model.addAttribute("statuses", TaskStatus.values());
+            model.addAttribute("priorities", TaskPriority.values());
+
+            return "tasks";
+        }
+
+        Task task = new Task();
+
+        task.setTitle(taskRequest.getTitle());
+        task.setDescription(taskRequest.getDescription());
+        task.setDueDate(taskRequest.getDueDate());
+        task.setPriority(taskRequest.getPriority());
+        task.setStatus(taskRequest.getStatus());
+
         task.setWedding(wedding);
+
         taskService.saveTask(task);
 
         return "redirect:/tasks";
@@ -74,7 +96,16 @@ public class TaskController {
         Task task = taskService.getTaskById(id, wedding.getId())
                 .orElseThrow(()-> new ResourceNotFoundException("Task not found."));
 
-        model.addAttribute("task", task);
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setId(task.getId());
+        taskRequest.setTitle(task.getTitle());
+        taskRequest.setDescription(task.getDescription());
+        taskRequest.setDueDate(task.getDueDate());
+        taskRequest.setPriority(task.getPriority());
+        taskRequest.setStatus(task.getStatus());
+
+        model.addAttribute("taskRequest", taskRequest);
         model.addAttribute("statuses", TaskStatus.values());
         model.addAttribute("priorities", TaskPriority.values());
 
@@ -82,18 +113,29 @@ public class TaskController {
     }
 
     @PostMapping("/tasks/update")
-    public String updateTask(@ModelAttribute Task task) {
+    public String updateTask(@Valid @ModelAttribute ("taskRequest") TaskRequest taskRequest,
+                             BindingResult bindingResult,
+                             Model model) {
+
         Wedding wedding = weddingService.getWedding()
                 .orElseThrow(()-> new IllegalStateException("Wedding not found."));
 
-        Task existingTask = taskService.getTaskById(task.getId(), wedding.getId())
+        if(bindingResult.hasErrors()){
+            model.addAttribute("statuses", TaskStatus.values());
+            model.addAttribute("priorities", TaskPriority.values());
+
+            return "task-edit";
+        }
+
+
+        Task existingTask = taskService.getTaskById(taskRequest.getId(), wedding.getId())
                         .orElseThrow(()->new ResourceNotFoundException("Task not found."));
 
-        existingTask.setTitle(task.getTitle());
-        existingTask.setDescription(task.getDescription());
-        existingTask.setDueDate(task.getDueDate());
-        existingTask.setPriority(task.getPriority());
-        existingTask.setStatus(task.getStatus());
+        existingTask.setTitle(taskRequest.getTitle());
+        existingTask.setDescription(taskRequest.getDescription());
+        existingTask.setDueDate(taskRequest.getDueDate());
+        existingTask.setPriority(taskRequest.getPriority());
+        existingTask.setStatus(taskRequest.getStatus());
 
         taskService.saveTask(existingTask);
 

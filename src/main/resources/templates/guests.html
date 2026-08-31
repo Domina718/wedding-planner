@@ -51,7 +51,7 @@
             <h4 class="card-title mb-4">Add guest</h4>
 
             <form th:action="@{/guests/save}"
-                  th:object="${guest}"
+                  th:object="${guestRequest}"
                   method="post">
 
                 <div class="row g-3">
@@ -63,7 +63,13 @@
                                id="firstName"
                                th:field="*{firstName}"
                                class="form-control"
-                               required>
+                               th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('firstName')}"
+                             th:errors="*{firstName}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">
@@ -73,7 +79,13 @@
                                id="lastName"
                                th:field="*{lastName}"
                                class="form-control"
-                               required>
+                               th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('lastName')}"
+                             th:errors="*{lastName}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">
@@ -82,7 +94,13 @@
                         <input type="email"
                                id="email"
                                th:field="*{email}"
-                               class="form-control">
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}">
+                        </div>
 
                     </div>
 
@@ -100,7 +118,8 @@
                         <label for="rsvpStatus" class="form-label">RSVP status</label>
                         <select id="rsvpStatus"
                                 th:field="*{rsvpStatus}"
-                                class="form-select">
+                                class="form-select"
+                                th:classappend="${#fields.hasErrors('rsvpStatus')} ? 'is-invalid'">
 
                             <option th:each="status : ${rsvpStatuses}"
                                     th:value="${status}"
@@ -108,6 +127,11 @@
                             </option>
 
                         </select>
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('rsvpStatus')}"
+                             th:errors="*{rsvpStatus}">
+                        </div>
 
                     </div>
 
@@ -175,14 +199,57 @@
                 </h4>
 
                 <span class="text-muted">
-          Total:
-          <strong th:text="${guests.size()}"></strong>
-        </span>
+                  Total:
+                  <strong th:text="${guests.size()}"></strong>
+                </span>
 
             </div>
 
+            <form th:action="@{/guests}"
+                  method="get"
+                  class="row g-2 mb-4">
+
+                <div class="col-md-5">
+                    <input type="text"
+                           name="search"
+                           class="form-control"
+                           placeholder="Search guests and plus-ones"
+                           th:value="${search}">
+                </div>
+
+                <div class="col-md-4">
+                    <select name="status"
+                            class="form-select">
+
+                        <option value="">All RSVP statuses</option>
+
+                        <option th:each="status : ${rsvpStatuses}"
+                                th:value="${status}"
+                                th:text="${status}"
+                                th:selected="${status == selectedStatus}">
+                        </option>
+
+                    </select>
+                </div>
+
+                <div class="col-auto">
+                    <button type="submit"
+                            class="btn btn-outline-dark">
+                        Search
+                    </button>
+                </div>
+
+                <div class="col-auto">
+                    <a th:href="@{/guests}"
+                       class="btn btn-outline-secondary">
+                        Clear
+                    </a>
+                </div>
+
+            </form>
+
             <div th:if="${guests.isEmpty()}" class="alert alert-secondary">
-                No guests have been added yet.
+                No guests found.
             </div>
 
             <div th:if="${!guests.isEmpty()}"
@@ -210,30 +277,36 @@
                     <tr th:each="guest : ${guests}">
 
                         <td th:text="${guest.firstName}"></td>
-                        <td th:text="${guest.lastName}"
-                        </td>
+                        <td th:text="${guest.lastName}"></td>
                         <td th:text="${guest.email}"></td>
                         <td th:text="${guest.phone}"></td>
-                        <td th:text="${guest.rsvpStatus}"></td>
-
                         <td>
-              <span th:if="${guest.plusOne}">
-                Yes
-              </span>
-
-                            <span th:unless="${guest.plusOne}">
-                No
-              </span>
+                            <span class="badge"
+                                  th:text="${guest.rsvpStatus}"
+                                  th:classappend="${guest.rsvpStatus.name() == 'CONFIRMED'} ? ' text-bg-success' :
+                                                  (${guest.rsvpStatus.name() == 'DECLINED'} ? ' text-bg-danger' :
+                                                  ' text-bg-warning')">
+                            </span>
                         </td>
 
                         <td>
-              <span th:if="${guest.plusOne}"
-                    th:text="${guest.plusOneFirstName + ' ' + guest.plusOneLastName}">
-              </span>
+                            <span th:if="${guest.plusOne}">
+                                Yes
+                            </span>
 
                             <span th:unless="${guest.plusOne}">
-                -
-              </span>
+                                No
+                            </span>
+                        </td>
+
+                        <td>
+                            <span th:if="${guest.plusOne}"
+                                th:text="${guest.plusOneFirstName + ' ' + guest.plusOneLastName}">
+                            </span>
+
+                            <span th:unless="${guest.plusOne}">
+                                -
+                            </span>
                         </td>
 
                         <td>
@@ -244,7 +317,8 @@
 
                             <form th:action="@{/guests/delete/{id}(id=${guest.id})}"
                                   method="post"
-                                  class="d-inline">
+                                  class="d-inline"
+                                  onsubmit="return confirm('Are you sure you want to delete this guest?');">
 
                                 <button type="submit" class="btn btn-outline-danger btn-sm">
                                     Delete
@@ -290,6 +364,13 @@
   plusOneCheckbox.addEventListener("change", togglePlusOneFields);
 
   togglePlusOneFields();
+
+
+
+
+
+
+
 
 </script>
 

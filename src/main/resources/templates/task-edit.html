@@ -56,7 +56,7 @@
         <div class="card-body">
 
             <form th:action="@{/tasks/update}"
-                  th:object="${task}"
+                  th:object="${taskRequest}"
                   method="post">
 
                 <input type="hidden" th:field="*{id}">
@@ -74,7 +74,13 @@
                                id="title"
                                th:field="*{title}"
                                class="form-control"
-                               required>
+                               th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('title')}"
+                             th:errors="*{title}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">
@@ -88,7 +94,13 @@
                                id="dueDate"
                                th:field="*{dueDate}"
                                class="form-control"
-                               required>
+                               th:classappend="${#fields.hasErrors('dueDate')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('dueDate')}"
+                             th:errors="*{dueDate}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">

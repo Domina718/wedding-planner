@@ -55,7 +55,7 @@
         <div class="card-body">
 
             <form th:action="@{/vendors/update}"
-                  th:object="${vendor}"
+                  th:object="${vendorRequest}"
                   method="post">
 
                 <input type="hidden" th:field="*{id}">
@@ -73,20 +73,28 @@
                                id="name"
                                th:field="*{name}"
                                class="form-control"
-                               required>
+                               th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('name')}"
+                             th:errors="*{name}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">
 
                         <label for="serviceType"
                                class="form-label">
-                            Sevice type
+                            Service type
                         </label>
 
                         <select id="serviceType"
                                 th:field="*{serviceType}"
                                 class="form-select"
-                                required>
+                                th:classappend="${#fields.hasErrors('serviceType')} ? 'is-invalid'">
+
+                            <option value="">Select service</option>
 
                             <option th:each="type : ${serviceTypes}"
                                     th:value="${type}"
@@ -94,6 +102,11 @@
                             </option>
 
                         </select>
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('serviceType')}"
+                             th:errors="*{serviceType}">
+                        </div>
 
                     </div>
 
@@ -107,7 +120,13 @@
                         <input type="email"
                                id="email"
                                th:field="*{email}"
-                               class="form-control">
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">
@@ -135,7 +154,14 @@
                                th:field="*{estimatedPrice}"
                                min="0"
                                step="0.01"
-                               class="form-control">
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('estimatedPrice')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('estimatedPrice')}"
+                             th:errors="*{estimatedPrice}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">
@@ -150,7 +176,14 @@
                                th:field="*{depositAmount}"
                                min="0"
                                step="0.01"
-                               class="form-control">
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('depositAmount')} ? 'is-invalid'">
+
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('depositAmount')}"
+                             th:errors="*{depositAmount}">
+                        </div>
+
                     </div>
 
                     <div class="col-md-6">
